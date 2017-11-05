@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="/style.css">
+	</title>
+</head>
+<body>
+	<h1 class="title">Students Resource</h1>
+	<div id="homepage">
+		<h1>Check student details</h1>
+		<div id="students"></div>
+	</div>
+
+	<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+	<script src="https://unpkg.com/react@15/dist/react.js"></script>
+	<script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+
+	<script type="text/babel">
+	
+	var Student = React.createClass({
+		getInitialState: function(){
+			return({
+			students: []
+		});
+	},
+		render:function(){
+		var students = this.state.students;
+		students = students.map(function(student, index){
+		return(
+		<li key={index}>
+			<span className={student.obj.available}></span>
+			<span className="email">{student.obj.email}</span>
+			<span className= "gender">{student.obj.gender}</span>
+			<span className= "level">{student.obj.level}</span>
+			<span className= "department">{student.obj.department}</span>
+			<span className= "faculty">{student.obj.faculty}</span>
+			<span className= "address">{student.obj.address}</span>
+			<span className= "religion">{student.obj.religion}</span>
+		</li>)
+	});
+		return(
+		<div id="student-container">
+			<form id = "search" onSubmit={this.handleSubmit}>
+				<label>Enter First Name:</label>
+				<input type="text" ref="first_name" placeholder="First Name" required>
+				<label>Enter Last Name:</label>
+				<input type="text" ref="last_name" placeholder="Last Name" required>
+				<input type="submit" value="Find Student">
+			</form>
+			<ul>{students}</ul>
+		</div>
+		);
+	},
+	handleSubmit: function(e){
+		e.preventDefault();
+		var firstName = this.refs.firstname.value;
+		var lastname = this.refs.lastname.value;
+
+		fetch('/api/students?firstname=' + firstname + '&lastname=' + lastname).then(function(data){
+		return data.json();
+	}).then(json => {
+		this.setState({
+			students:json
+	});
+})
+	}
+	});
+
+	ReactDOM.render(<Student/>, document.getElementById('students'));
+	</script>
+</body>
+</html>
